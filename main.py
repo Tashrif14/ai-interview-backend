@@ -1,10 +1,3 @@
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/")
-def home():
-    return {"message": "AI Interview Backend Running!"}
 from fastapi import FastAPI, HTTPException, WebSocket
 from pydantic import BaseModel
 import openai
@@ -23,6 +16,10 @@ class InterviewRequest(BaseModel):
     job_title: str
     job_description: str
 
+@app.get("/")
+def home():
+    return {"message": "AI Interview Backend Running!"}
+
 @app.post("/start_interview/")
 def start_interview(request: InterviewRequest):
     prompt = f"Generate 15 job interview questions for a {request.job_title} role. Job description: {request.job_description}"
@@ -40,7 +37,7 @@ def start_interview(request: InterviewRequest):
         return {"interview_id": interview_id, "message": "Interview started! Redirecting to live conversation."}
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)})
+        raise HTTPException(status_code=500, detail=str(e))  # Fixed closing parenthesis
 
 @app.websocket("/interview/{interview_id}")
 async def interview(websocket: WebSocket, interview_id: int):
