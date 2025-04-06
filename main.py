@@ -4,7 +4,7 @@ import openai
 import os
 
 # Load API key from environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY_2")
 
 app = FastAPI()
 
