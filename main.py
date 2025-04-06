@@ -25,19 +25,24 @@ def start_interview(request: InterviewRequest):
     prompt = f"Generate 15 job interview questions for a {request.job_title} role. Job description: {request.job_description}"
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "system", "content": prompt}]
+        # New method to generate questions using the updated OpenAI API
+        response = openai.completions.create(
+            model="gpt-3.5-turbo",  # or another model you're using
+            prompt=prompt,
+            max_tokens=150  # Adjust the number of tokens as needed
         )
         
-        questions = response["choices"][0]["message"]["content"].split("\n")
-        interview_id = len(active_interviews) + 1  # Generate interview session ID
+        # Extract questions from the API response
+        questions = response['choices'][0]['text'].split("\n")
+        
+        # Generate a unique interview ID
+        interview_id = len(active_interviews) + 1
         active_interviews[interview_id] = {"questions": questions, "index": 0}
 
         return {"interview_id": interview_id, "message": "Interview started! Redirecting to live conversation."}
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))  # Fixed closing parenthesis
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.websocket("/interview/{interview_id}")
 async def interview(websocket: WebSocket, interview_id: int):
