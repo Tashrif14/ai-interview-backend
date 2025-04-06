@@ -22,7 +22,7 @@ def home():
 
 @app.post("/start_interview/")
 def start_interview(request: InterviewRequest):
-    prompt = f"Generate 15 job interview questions for a {request.job_title} role. Job description: {request.job_description}"
+    prompt = f"Generate 5 job interview questions for a {request.job_title} role. Job description: {request.job_description}"
 
     try:
         # New method to generate questions using the updated OpenAI API
